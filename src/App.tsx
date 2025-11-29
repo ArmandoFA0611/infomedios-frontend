@@ -1,8 +1,11 @@
+// src/App.tsx
+
 import React from "react";
 import { Routes, Route, NavLink } from "react-router-dom";
 import { HomePage } from "./pages/HomePage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { RegisterPage } from "./pages/RegisterPage";
+import { ServiceCatalogPage } from "./pages/ServiceCatalogPage";
 
 const App: React.FC = () => {
   return (
@@ -15,11 +18,11 @@ const App: React.FC = () => {
               Infomedios
             </h1>
             <p className="text-sm text-slate-500">
-              Sistema de monitoreo de medios · Sprint 1
+              Sistema de monitoreo de medios · Sprints 1–3
             </p>
           </div>
 
-          <nav className="flex gap-4 text-sm">
+          <nav className="flex flex-wrap gap-4 text-sm">
             <NavLink
               to="/"
               className={({ isActive }) =>
@@ -30,6 +33,7 @@ const App: React.FC = () => {
             >
               Inicio
             </NavLink>
+
             <NavLink
               to="/panel"
               className={({ isActive }) =>
@@ -40,6 +44,7 @@ const App: React.FC = () => {
             >
               Panel interno
             </NavLink>
+
             <NavLink
               to="/registro"
               className={({ isActive }) =>
@@ -49,6 +54,17 @@ const App: React.FC = () => {
               }
             >
               Registro de usuarios
+            </NavLink>
+
+            <NavLink
+              to="/catalogo"
+              className={({ isActive }) =>
+                `hover:text-indigo-600 ${
+                  isActive ? "font-semibold text-indigo-700" : ""
+                }`
+              }
+            >
+              Catálogo de servicios
             </NavLink>
           </nav>
         </div>
@@ -60,14 +76,15 @@ const App: React.FC = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/panel" element={<DashboardPage />} />
           <Route path="/registro" element={<RegisterPage />} />
+          <Route path="/catalogo" element={<ServiceCatalogPage />} />
         </Routes>
       </main>
 
       {/* FOOTER SIMPLE */}
       <footer className="border-t border-slate-200 mt-8">
-        <div className="max-w-6xl mx-auto px-4 py-4 text-xs text-slate-500 flex justify-between">
+        <div className="max-w-6xl mx-auto px-4 py-4 text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
           <span>Proyecto Infomedios · Metodología Scrum</span>
-          <span>Sprint 1: Panel + Registro</span>
+          <span>Sprints 1–3: Panel, Registro, Órdenes, Notificaciones y Catálogo</span>
         </div>
       </footer>
     </div>
