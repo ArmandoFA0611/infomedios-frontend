@@ -55,8 +55,8 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
       </table>
 
       <div className="px-4 py-3 border-t border-slate-100 text-xs text-slate-500">
-        Datos de prueba y órdenes creadas en los Sprints. La integración con
-        una API real se realizará en fases posteriores.
+        Órdenes almacenadas en un servidor JSON simulado (JSON Server) como
+        parte del desarrollo iterativo por Sprints.
       </div>
     </div>
   );

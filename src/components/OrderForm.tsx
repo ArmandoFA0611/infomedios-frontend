@@ -49,6 +49,8 @@ const OrderForm: React.FC<OrderFormProps> = ({
       onSubmit={handleSubmit}
       className="bg-white shadow-md shadow-slate-200/60 rounded-2xl p-4 md:p-5 space-y-4 border border-slate-200/80"
     >
+      {/* ...exactamente igual que ya lo tenías... */}
+      {/* (no lo recorto para que puedas pegarlo tal cual si quieres) */}
       <h2 className="text-sm font-semibold text-slate-900">
         Crear nueva orden
       </h2>

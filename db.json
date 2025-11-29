@@ -1,0 +1,37 @@
+{
+  "services": [
+    {
+      "id": "1",
+      "nombre": "Monitoreo de noticias en TV",
+      "categoría": "Televisión",
+      "medio": "TV",
+      "descripcion": "Seguimiento diario de noticieros nacionales.",
+      "precio": 2500
+    },
+    {
+      "id": "2",
+      "nombre": "Monitoreo de radio nacional",
+      "categoría": "Radio",
+      "medio": "Radio",
+      "descripcion": "Cobertura de programas informativos en radio.",
+      "precio": 1800
+    },
+    {
+      "id": "3",
+      "nombre": "Monitoreo de prensa escrita",
+      "categoría": "Prensa",
+      "medio": "Prensa",
+      "descripcion": "Revisión de periódicos impresos y digitales.",
+      "precio": 2200
+    }
+  ],
+  "orders": [
+    {
+      "id": "6088",
+      "cliente": "Empresa VIP",
+      "medio": "Televisión",
+      "fecha": "2025-12-01",
+      "estado": "Pendiente"
+    }
+  ]
+}

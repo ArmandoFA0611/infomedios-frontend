@@ -5,35 +5,57 @@ import OrderForm from "../components/OrderForm";
 import Notification from "../components/Notification";
 import type { Order, OrderInput } from "../types/order";
 
+const ORDERS_API_URL = "http://localhost:3001/orders";
+
 export const DashboardPage: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [showNotification, setShowNotification] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadOrders = async () => {
       try {
-        const res = await fetch("/data/orders.json");
-        const data = await res.json();
+        setLoading(true);
+        const res = await fetch(ORDERS_API_URL);
+        if (!res.ok) {
+          throw new Error("Error al cargar órdenes");
+        }
+        const data = (await res.json()) as Order[];
         setOrders(data);
       } catch (error) {
         console.error("Error cargando órdenes:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     loadOrders();
   }, []);
 
-  const handleCreateOrder = (input: OrderInput) => {
-    const newOrder: Order = {
-      id: orders.length ? orders[orders.length - 1].id + 1 : 1,
-      cliente: input.cliente,
-      medio: input.medio,
-      fecha: input.fecha,
-      estado: "Pendiente",
-    };
+  const handleCreateOrder = async (input: OrderInput) => {
+    try {
+      const res = await fetch(ORDERS_API_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cliente: input.cliente,
+          medio: input.medio,
+          fecha: input.fecha,
+          // estado inicial; debe coincidir con tu tipo Order["estado"]
+          estado: "Pendiente",
+        }),
+      });
 
-    setOrders((prev) => [...prev, newOrder]);
-    setShowNotification(true);
+      if (!res.ok) {
+        throw new Error("Error al crear la orden");
+      }
+
+      const created = (await res.json()) as Order;
+      setOrders((prev) => [...prev, created]);
+      setShowNotification(true);
+    } catch (error) {
+      console.error("Error creando orden:", error);
+    }
   };
 
   const medios = ["Televisión", "Radio", "Prensa escrita", "Redes sociales"];
@@ -45,8 +67,8 @@ export const DashboardPage: React.FC = () => {
           Órdenes de monitoreo
         </h1>
         <p className="text-sm text-slate-600">
-          Gestiona las órdenes activas y consulta su estado actual en tiempo
-          real (datos mock para este Sprint).
+          Gestiona las órdenes activas y consulta su estado actual en tiempo real.
+          En esta fase se usan datos almacenados en un servidor JSON simulado.
         </p>
       </header>
 
@@ -54,7 +76,16 @@ export const DashboardPage: React.FC = () => {
         <div className="lg:sticky lg:top-24">
           <OrderForm onSubmit={handleCreateOrder} mediosDisponibles={medios} />
         </div>
-        <OrderTable orders={orders} />
+
+        <div className="mt-4">
+          {loading ? (
+            <div className="bg-white rounded-xl border border-slate-200 p-4">
+              <p className="text-sm text-slate-500">Cargando órdenes...</p>
+            </div>
+          ) : (
+            <OrderTable orders={orders} />
+          )}
+        </div>
       </section>
 
       {showNotification && (
