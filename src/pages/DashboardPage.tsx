@@ -1,77 +1,69 @@
 // src/pages/DashboardPage.tsx
-
 import React, { useEffect, useState } from "react";
-import { OrderTable } from "../components/OrderTable";
-import { OrderForm } from "../components/OrderForm";
-import { Notification } from "../components/Notification";
-import type { Order } from "../types/order";
+import OrderTable from "../components/OrderTable";
+import OrderForm from "../components/OrderForm";
+import Notification from "../components/Notification";
+import type { Order, OrderInput } from "../types/order";
 
 export const DashboardPage: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [notification, setNotification] = useState<{
-    message: string;
-    type: "success" | "error" | "info";
-  } | null>(null);
+  const [showNotification, setShowNotification] = useState(false);
 
-  // Cargar órdenes iniciales desde el mock JSON (Sprint 2)
   useEffect(() => {
     const loadOrders = async () => {
       try {
         const res = await fetch("/data/orders.json");
-        if (!res.ok) throw new Error("No se pudo cargar orders.json");
-        const data = (await res.json()) as Order[];
+        const data = await res.json();
         setOrders(data);
       } catch (error) {
-        console.error(error);
-        // Fallback simple si falla el fetch
-        setOrders([]);
-        setNotification({
-          message:
-            "No se pudieron cargar las órdenes iniciales (mock). Trabajando solo en memoria.",
-          type: "info",
-        });
+        console.error("Error cargando órdenes:", error);
       }
     };
 
     loadOrders();
   }, []);
 
-  const handleCreateOrder = (order: Order) => {
-    // agregamos la nueva orden al inicio (más reciente arriba)
-    setOrders((prev) => [order, ...prev]);
+  const handleCreateOrder = (input: OrderInput) => {
+    const newOrder: Order = {
+      id: orders.length ? orders[orders.length - 1].id + 1 : 1,
+      cliente: input.cliente,
+      medio: input.medio,
+      fecha: input.fecha,
+      estado: "Pendiente",
+    };
 
-    setNotification({
-      message: "Orden de monitoreo creada correctamente (PI3 / Sprint 2).",
-      type: "success",
-    });
+    setOrders((prev) => [...prev, newOrder]);
+    setShowNotification(true);
   };
 
+  const medios = ["Televisión", "Radio", "Prensa escrita", "Redes sociales"];
+
   return (
-    <section className="space-y-6 relative">
-      <header className="space-y-1">
-        <h2 className="text-xl font-semibold text-slate-800">
-          Panel interno · Órdenes de monitoreo
-        </h2>
-        <p className="text-sm text-slate-600 max-w-2xl">
-          Esta vista representa el trabajo del{" "}
-          <span className="font-semibold">administrador</span> de Infomedios,
-          quien consulta y gestiona las órdenes de monitoreo. A partir del
-          Sprint 2 se incorpora la creación de órdenes reales (PI3) y el uso de
-          notificaciones (PI4), conectadas a un archivo JSON de ejemplo.
+    <div className="max-w-6xl mx-auto px-4 space-y-5">
+      <header className="flex flex-col gap-1">
+        <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          Órdenes de monitoreo
+        </h1>
+        <p className="text-sm text-slate-600">
+          Gestiona las órdenes activas y consulta su estado actual en tiempo
+          real (datos mock para este Sprint).
         </p>
       </header>
 
-      <OrderForm onCreateOrder={handleCreateOrder} />
+      <section className="grid gap-5 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1.3fr)] items-start">
+        <div className="lg:sticky lg:top-24">
+          <OrderForm onSubmit={handleCreateOrder} mediosDisponibles={medios} />
+        </div>
+        <OrderTable orders={orders} />
+      </section>
 
-      <OrderTable orders={orders} />
-
-      {notification && (
+      {showNotification && (
         <Notification
-          message={notification.message}
-          type={notification.type}
-          onClose={() => setNotification(null)}
+          type="success"
+          message="Orden creada correctamente."
+          onClose={() => setShowNotification(false)}
         />
       )}
-    </section>
+    </div>
   );
 };

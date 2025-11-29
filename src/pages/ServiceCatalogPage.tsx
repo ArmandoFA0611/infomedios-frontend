@@ -1,55 +1,48 @@
 // src/pages/ServiceCatalogPage.tsx
-
-import React, { useEffect, useMemo, useState } from "react";
-import type { Service, ServiceCategory, MediaKind } from "../types/service";
-import { ServiceCard } from "../components/ServiceCard";
-import { ServiceFilters } from "../components/ServiceFilters";
+import React, { useMemo, useState } from "react";
+import ServiceCard from "../components/ServiceCard";
+import ServiceFilters from "../components/ServiceFilters";
+import { useServices } from "../hooks/useServices";
+import type { ServiceCategory, MediaKind } from "../types/service";
 
 export const ServiceCatalogPage: React.FC = () => {
-  const [services, setServices] = useState<Service[]>([]);
+  const { services, loading } = useServices();
+
   const [categoria, setCategoria] = useState<ServiceCategory | "Todas">(
     "Todas"
   );
   const [medio, setMedio] = useState<MediaKind | "Todos">("Todos");
 
-  // Cargar servicios desde JSON mock (Sprint 3)
-  useEffect(() => {
-    const loadServices = async () => {
-      try {
-        const res = await fetch("/data/services.json");
-        if (!res.ok) throw new Error("No se pudo cargar services.json");
-        const data = (await res.json()) as Service[];
-        setServices(data);
-      } catch (error) {
-        console.error(error);
-        setServices([]);
-      }
-    };
+  const filtered = useMemo(
+    () =>
+      services.filter((service) => {
+        const matchCategoria =
+          categoria === "Todas" || service.categoria === categoria;
+        const matchMedio = medio === "Todos" || service.medio === medio;
+        return matchCategoria && matchMedio;
+      }),
+    [services, categoria, medio]
+  );
 
-    loadServices();
-  }, []);
-
-  const filteredServices = useMemo(() => {
-    return services.filter((service) => {
-      const matchCategoria =
-        categoria === "Todas" || service.categoria === categoria;
-      const matchMedio = medio === "Todos" || service.medio === medio;
-      return matchCategoria && matchMedio;
-    });
-  }, [services, categoria, medio]);
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-10">
+        <p className="text-center text-slate-600">
+          Cargando servicios de monitoreo...
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <section className="space-y-6">
+    <div className="max-w-6xl mx-auto px-4 space-y-5">
       <header className="space-y-1">
-        <h2 className="text-xl font-semibold text-slate-800">
+        <h1 className="text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
           Catálogo de servicios de monitoreo
-        </h2>
+        </h1>
         <p className="text-sm text-slate-600 max-w-2xl">
-          Esta vista corresponde a la historia de usuario <strong>PI5</strong>.
-          Aquí el cliente puede explorar de manera visual los servicios de
-          Infomedios, filtrando por categoría y tipo de medio antes de solicitar
-          una orden de monitoreo. Los datos provienen de un archivo JSON
-          simulado (mock) como se definió en el Sprint 3.
+          Explora los servicios disponibles y filtra por categoría y tipo de
+          medio para armar la mejor estrategia de monitoreo para tus clientes.
         </p>
       </header>
 
@@ -60,22 +53,17 @@ export const ServiceCatalogPage: React.FC = () => {
         onMedioChange={setMedio}
       />
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredServices.map((service) => (
-          <ServiceCard key={service.id} service={service} />
-        ))}
-      </div>
-
-      {filteredServices.length === 0 && (
-        <p className="text-xs text-slate-500 mt-4">
+      {filtered.length === 0 ? (
+        <p className="mt-8 text-center text-slate-500">
           No se encontraron servicios con los filtros seleccionados.
         </p>
+      ) : (
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mt-2">
+          {filtered.map((service) => (
+            <ServiceCard key={service.id} service={service} />
+          ))}
+        </div>
       )}
-
-      <p className="text-[11px] text-slate-400 mt-4">
-        Datos simulados (mock) para el Sprint 3. La conexión con una API o base
-        de datos real se realizaría en una fase posterior.
-      </p>
-    </section>
+    </div>
   );
 };

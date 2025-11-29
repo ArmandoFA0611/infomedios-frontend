@@ -1,5 +1,4 @@
 // src/App.tsx
-
 import React from "react";
 import { Routes, Route, NavLink } from "react-router-dom";
 import { HomePage } from "./pages/HomePage";
@@ -11,82 +10,51 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-100 text-slate-900">
       {/* HEADER */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div>
-            <h1 className="text-2xl font-bold text-indigo-700">
-              Infomedios
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+              Infomedios AFA
             </h1>
-            <p className="text-sm text-slate-500">
-              Sistema de monitoreo de medios · Sprints 1–3
+            <p className="text-xs sm:text-sm text-slate-500">
+              Panel de monitoreo de medios • Proyecto académico
             </p>
           </div>
 
-          <nav className="flex flex-wrap gap-4 text-sm">
-            <NavLink
-              to="/"
-              className={({ isActive }) =>
-                `hover:text-indigo-600 ${
-                  isActive ? "font-semibold text-indigo-700" : ""
-                }`
-              }
-            >
-              Inicio
-            </NavLink>
-
-            <NavLink
-              to="/panel"
-              className={({ isActive }) =>
-                `hover:text-indigo-600 ${
-                  isActive ? "font-semibold text-indigo-700" : ""
-                }`
-              }
-            >
-              Panel interno
-            </NavLink>
-
-            <NavLink
-              to="/registro"
-              className={({ isActive }) =>
-                `hover:text-indigo-600 ${
-                  isActive ? "font-semibold text-indigo-700" : ""
-                }`
-              }
-            >
-              Registro de usuarios
-            </NavLink>
-
-            <NavLink
-              to="/catalogo"
-              className={({ isActive }) =>
-                `hover:text-indigo-600 ${
-                  isActive ? "font-semibold text-indigo-700" : ""
-                }`
-              }
-            >
-              Catálogo de servicios
-            </NavLink>
+          <nav className="flex gap-2 text-sm">
+            {[
+              { to: "/", label: "Inicio" },
+              { to: "/dashboard", label: "Dashboard" },
+              { to: "/catalog", label: "Catálogo" },
+              { to: "/register", label: "Registro" },
+            ].map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                className={({ isActive }) =>
+                  `px-3 py-1.5 rounded-full transition text-xs sm:text-sm ${
+                    isActive
+                      ? "bg-sky-600 text-white shadow-sm"
+                      : "text-slate-700 hover:bg-slate-100"
+                  }`
+                }
+              >
+                {link.label}
+              </NavLink>
+            ))}
           </nav>
         </div>
       </header>
 
-      {/* CONTENIDO PRINCIPAL */}
-      <main className="max-w-6xl mx-auto px-4 py-8">
+      {/* MAIN */}
+      <main className="py-8">
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/panel" element={<DashboardPage />} />
-          <Route path="/registro" element={<RegisterPage />} />
-          <Route path="/catalogo" element={<ServiceCatalogPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/catalog" element={<ServiceCatalogPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </main>
-
-      {/* FOOTER SIMPLE */}
-      <footer className="border-t border-slate-200 mt-8">
-        <div className="max-w-6xl mx-auto px-4 py-4 text-xs text-slate-500 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-          <span>Proyecto Infomedios · Metodología Scrum</span>
-          <span>Sprints 1–3: Panel, Registro, Órdenes, Notificaciones y Catálogo</span>
-        </div>
-      </footer>
     </div>
   );
 };

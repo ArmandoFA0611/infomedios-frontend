@@ -1,49 +1,59 @@
 // src/components/Notification.tsx
+import React, { useEffect, useState } from "react";
 
-import React, { useEffect } from "react";
-
-type NotificationType = "success" | "error" | "info";
+export type NotificationType = "success" | "error" | "info";
 
 interface NotificationProps {
   message: string;
   type?: NotificationType;
   onClose?: () => void;
-  durationMs?: number;
 }
 
-export const Notification: React.FC<NotificationProps> = ({
+const baseStyles =
+  "fixed top-4 right-4 z-50 max-w-sm rounded-xl shadow-lg px-4 py-3 text-sm flex items-start gap-3 transition-all duration-500";
+
+const typeStyles: Record<NotificationType, string> = {
+  success: "bg-emerald-50 text-emerald-800 border border-emerald-200",
+  error: "bg-red-50 text-red-800 border border-red-200",
+  info: "bg-sky-50 text-sky-800 border border-sky-200",
+};
+
+const Notification: React.FC<NotificationProps> = ({
   message,
-  type = "success",
+  type = "info",
   onClose,
-  durationMs = 3000,
 }) => {
+  const [visible, setVisible] = useState(true);
+
   useEffect(() => {
-    if (!onClose) return;
-    const timer = setTimeout(onClose, durationMs);
+    const timer = setTimeout(() => {
+      setVisible(false);
+      if (onClose) {
+        setTimeout(onClose, 500); // espera a que termine la animación
+      }
+    }, 2500);
+
     return () => clearTimeout(timer);
-  }, [onClose, durationMs]);
+  }, [onClose]);
 
-  const base =
-    "fixed bottom-4 right-4 z-50 rounded-lg px-4 py-3 text-sm shadow-lg border flex items-center gap-2";
-
-  const styles =
-    type === "success"
-      ? "bg-emerald-50 border-emerald-200 text-emerald-800"
-      : type === "error"
-      ? "bg-red-50 border-red-200 text-red-800"
-      : "bg-slate-50 border-slate-200 text-slate-800";
+  if (!visible) {
+    return null;
+  }
 
   return (
-    <div className={`${base} ${styles}`}>
-      <span>{message}</span>
-      {onClose && (
-        <button
-          className="ml-2 text-xs underline underline-offset-2"
-          onClick={onClose}
-        >
-          Cerrar
-        </button>
-      )}
+    <div
+      className={`${baseStyles} ${typeStyles[type]} ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
+      }`}
+    >
+      <span className="mt-0.5">
+        {type === "success" && "✅"}
+        {type === "error" && "⚠️"}
+        {type === "info" && "ℹ️"}
+      </span>
+      <p>{message}</p>
     </div>
   );
 };
+
+export default Notification;
