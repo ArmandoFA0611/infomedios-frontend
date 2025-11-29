@@ -1,77 +1,42 @@
 // src/pages/ServiceCatalogPage.tsx
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import type { Service, ServiceCategory, MediaKind } from "../types/service";
 import { ServiceCard } from "../components/ServiceCard";
 import { ServiceFilters } from "../components/ServiceFilters";
 
-const MOCK_SERVICES: Service[] = [
-  {
-    id: 1,
-    nombre: "Monitoreo diario de noticiarios nacionales",
-    descripcion:
-      "Seguimiento de noticiarios de TV abierta y de paga con reporte de menciones y tono informativo.",
-    categoria: "Monitoreo",
-    medio: "Televisión",
-    precioDesde: 8500,
-    frecuencia: "Mensual",
-  },
-  {
-    id: 2,
-    nombre: "Monitoreo de radio matutina",
-    descripcion:
-      "Cobertura de programas de radio en horario matutino con alertas rápidas ante menciones críticas.",
-    categoria: "Monitoreo",
-    medio: "Radio",
-    precioDesde: 5200,
-    frecuencia: "Mensual",
-  },
-  {
-    id: 3,
-    nombre: "Reporte ejecutivo semanal",
-    descripcion:
-      "Síntesis gráfica de las principales menciones en medios con conclusiones y recomendaciones.",
-    categoria: "Reportes",
-    medio: "Prensa escrita",
-    precioDesde: 4300,
-    frecuencia: "Semanal",
-  },
-  {
-    id: 4,
-    nombre: "Análisis de conversación en redes sociales",
-    descripcion:
-      "Análisis de sentimiento, principales hashtags, influencers y alcance de las conversaciones.",
-    categoria: "Análisis",
-    medio: "Redes sociales",
-    precioDesde: 9600,
-    frecuencia: "Campaña",
-  },
-  {
-    id: 5,
-    nombre: "Monitoreo especial por crisis",
-    descripcion:
-      "Cobertura intensiva 24/7 en múltiples medios durante una situación de crisis reputacional.",
-    categoria: "Monitoreo",
-    medio: "Televisión",
-    precioDesde: 15000,
-    frecuencia: "Único",
-  },
-];
-
 export const ServiceCatalogPage: React.FC = () => {
+  const [services, setServices] = useState<Service[]>([]);
   const [categoria, setCategoria] = useState<ServiceCategory | "Todas">(
     "Todas"
   );
   const [medio, setMedio] = useState<MediaKind | "Todos">("Todos");
 
+  // Cargar servicios desde JSON mock (Sprint 3)
+  useEffect(() => {
+    const loadServices = async () => {
+      try {
+        const res = await fetch("/data/services.json");
+        if (!res.ok) throw new Error("No se pudo cargar services.json");
+        const data = (await res.json()) as Service[];
+        setServices(data);
+      } catch (error) {
+        console.error(error);
+        setServices([]);
+      }
+    };
+
+    loadServices();
+  }, []);
+
   const filteredServices = useMemo(() => {
-    return MOCK_SERVICES.filter((service) => {
+    return services.filter((service) => {
       const matchCategoria =
         categoria === "Todas" || service.categoria === categoria;
       const matchMedio = medio === "Todos" || service.medio === medio;
       return matchCategoria && matchMedio;
     });
-  }, [categoria, medio]);
+  }, [services, categoria, medio]);
 
   return (
     <section className="space-y-6">
@@ -83,7 +48,8 @@ export const ServiceCatalogPage: React.FC = () => {
           Esta vista corresponde a la historia de usuario <strong>PI5</strong>.
           Aquí el cliente puede explorar de manera visual los servicios de
           Infomedios, filtrando por categoría y tipo de medio antes de solicitar
-          una orden de monitoreo.
+          una orden de monitoreo. Los datos provienen de un archivo JSON
+          simulado (mock) como se definió en el Sprint 3.
         </p>
       </header>
 

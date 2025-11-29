@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "nombre": "Monitoreo diario de noticiarios nacionales",
+    "descripcion": "Seguimiento de noticiarios de TV abierta y de paga con reporte de menciones y tono informativo.",
+    "categoria": "Monitoreo",
+    "medio": "Televisión",
+    "precioDesde": 8500,
+    "frecuencia": "Mensual"
+  },
+  {
+    "id": 2,
+    "nombre": "Monitoreo de radio matutina",
+    "descripcion": "Cobertura de programas de radio en horario matutino con alertas rápidas ante menciones críticas.",
+    "categoria": "Monitoreo",
+    "medio": "Radio",
+    "precioDesde": 5200,
+    "frecuencia": "Mensual"
+  },
+  {
+    "id": 3,
+    "nombre": "Reporte ejecutivo semanal",
+    "descripcion": "Síntesis gráfica de las principales menciones en medios con conclusiones y recomendaciones.",
+    "categoria": "Reportes",
+    "medio": "Prensa escrita",
+    "precioDesde": 4300,
+    "frecuencia": "Semanal"
+  },
+  {
+    "id": 4,
+    "nombre": "Análisis de conversación en redes sociales",
+    "descripcion": "Análisis de sentimiento, principales hashtags, influencers y alcance de las conversaciones.",
+    "categoria": "Análisis",
+    "medio": "Redes sociales",
+    "precioDesde": 9600,
+    "frecuencia": "Campaña"
+  },
+  {
+    "id": 5,
+    "nombre": "Monitoreo especial por crisis",
+    "descripcion": "Cobertura intensiva 24/7 en múltiples medios durante una situación de crisis reputacional.",
+    "categoria": "Monitoreo",
+    "medio": "Televisión",
+    "precioDesde": 15000,
+    "frecuencia": "Único"
+  }
+]

@@ -1,0 +1,23 @@
+[
+  {
+    "id": 101,
+    "cliente": "Agencia Creativa Norte",
+    "medio": "Televisión",
+    "fecha": "2025-11-01",
+    "estado": "Pendiente"
+  },
+  {
+    "id": 102,
+    "cliente": "Marca XYZ",
+    "medio": "Redes sociales",
+    "fecha": "2025-11-02",
+    "estado": "En proceso"
+  },
+  {
+    "id": 103,
+    "cliente": "Gobierno Estatal",
+    "medio": "Prensa escrita",
+    "fecha": "2025-11-03",
+    "estado": "Completada"
+  }
+]
